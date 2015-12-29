@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>api-assignment-4</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<b> Word : </b><input id="search" type="text" placeholder="Enter word">
+	<button>Submit</button>
+	<br><br>
+	<div id="result"></div>
+
+	<script>
+	$(document).ready(function(){
+
+		$('button').on('click',function(){
+			var search = $('#search').val();
+			apiUrl = encodeURI('https://montanaflynn-dictionary.p.mashape.com/define?word='+search);
+			console.log(apiUrl);
+
+			$.ajax({
+				method:'GET',
+				url: apiUrl,
+				success: function(data){
+						Object.keys(data).forEach(function(key){
+							if(typeof(data[key]) === 'object'){
+								var test = data[key];
+								Object.keys(test).forEach(function(k){
+									if(typeof(test[k]) === 'object'){
+										var testKey = test[k];
+										Object.keys(testKey).forEach(function(ke){
+											if(ke === "attribution"){
+												$("#result").append("<div>"+"<b>Source:</b>" +testKey[ke] +"</div>"+"<br>");
+											} else {
+												$("#result").append("<div>"+ "<b>Meaning:</b>" +testKey[ke] +"</div>");
+											}
+										});
+									}
+								});
+							}
+						});
+						console.log(data);
+				},
+				error: function(err){alert(err);},
+				beforeSend: function(xhr){
+					xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+				}
+			});
+		});
+	});
+	</script>
+	
+</body>
+</html>

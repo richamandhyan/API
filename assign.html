@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<h2>Enter a movie! Get a Random quote!</h2>
+	<input id="category" type="text" placeholder="movies">
+	
+	<button id= "Enter">Submit!</button>
+	<div id="result"><br></div>
+			
+<script>
+	$(document).ready(function(){
+
+			$('button').on('click',function(){
+				var movie = $('#category').val();
+			
+	
+			var apiUrl = encodeURI('https://andruxnet-random-famous-quotes.p.mashape.com/cat=movies');
+
+			var postDataObj = {};
+			postDataObj.category = movie;
+			console.log(postDataObj);
+			
+
+		$.ajax({
+			method:'POST',
+			url: apiUrl,
+			data:  postDataObj,
+			success: function(data){
+				var obj = jQuery.parseJSON( data );
+						console.log(obj);
+				 		Object.keys(obj).forEach(function(key){
+				 			if(key === 'quote'){
+				 				$("#result").append("<div>"+ "<b> Quote : </b>"+ obj[key] +"</div>");
+					//console.log(obj[key]);
+				} else if(key ==='author'){
+					$("#result").append("<div>"+ "<b> Author : </b>"+ obj[key] +"</div>");
+					//console.log(obj[key]);
+				}
+				});
+				console.log(data);
+			},
+			
+			error: function(err){alert(err);},
+			beforeSend: function(xhr){
+					xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+				},
+
+			})
+		});
+
+});
+
+
+
+  </script>	
+</body>
+</html>

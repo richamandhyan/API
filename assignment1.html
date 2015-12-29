@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Api assignment-1</title>
+	<style>
+		#type{
+			width:200px;
+		}
+	</style>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<h2>Get Recharge Options for India</h2>
+	<b>Circle :</b> <input id="circle" type="text" placeholder="Enter circle">
+	<b>Operator : </b><input id="opcode" type="text" placeholder ="Enter operator code">
+	<b>Type :</b> <input id= "type" type="text"  placeholder = "3G,2G,Other,Topup,Data/2G">
+	<button>Search</button>
+	<div id="result"><br></div>
+	<script>
+	$(document).ready(function () {
+			
+			$('button').on('click', function () {
+				var circle = $('#circle').val();
+				var opecode= $('#opcode').val();
+				var types = $('#type').val();
+
+				var apiUrl = encodeURI('https://sphirelabs-indian-telecom-data-recharge-plans-v1.p.mashape.com/telecomdata/v1/get/index.php?circle='+circle +'&opcode='+opecode +'&type='+types);
+				console.log(apiUrl);
+		$.ajax({
+			method: 'GET',
+			url: apiUrl,
+			success: function(data){
+						var obj = jQuery.parseJSON( data );
+						console.log(obj);
+				 		Object.keys(obj).forEach(function(key){
+				 								
+				 			if(typeof(obj[key]) === "object"){
+					 			var arrRecharge = obj[key];
+					 			Object.keys(arrRecharge).forEach(function(ki){
+					 				if(ki === "recharge_amount"){
+					 					$("#result").append("<div>"+ "<b>For amount : </b>"+ arrRecharge[ki] +"</div>");
+					 												
+					 				} else if(ki === "recharge_circle") {
+					 					$("#result").append("<div>"+ "<b>In Area : </b> "+ arrRecharge[ki] +"</div>" + "<br>");
+					 											
+					 				} else if(ki === "recharge_description"){
+					 					$("#result").append("<div>"+ " <b> Tarrif Plan : </b> " + arrRecharge[ki] +"</div>");
+					 				
+					 				} else if(ki === "recharge_talktime"){
+					 					$("#result").append("<div>"+ "<b> Talktime Value : </b>"+ arrRecharge[ki] +"</div>"); 
+					 				
+					 				} else if(ki === "recharge_validity"){
+					 					$("#result").append("<div>"+ " <b> Validity : </b>"+ arrRecharge[ki] + " days " +"</div>");
+					 				}
+					 				
+					 			});
+				 			}
+				 	
+				 		});
+						console.log(data);
+					},
+			error: function(err) {alert(err);},
+			beforeSend: function(xhr){
+							xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+						}
+				});
+		});
+});
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>api-assignment3</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<h2>Find Latitudes and Longitudes</h2>
+	<b> Location : </b><input id="search" type="text" placeholder="Enter location">
+	<button>Find!</button>
+	<div id="result"><br><br></div>
+	<script>
+		$(document).ready(function () {
+
+			$('button').on('click', function () {
+
+			var location = $("#search").val();
+			var apiUrl = encodeURI('https://devru-latitude-longitude-find-v1.p.mashape.com/latlon.php?location='+location);			
+				console.log(apiUrl);
+		$.ajax({
+			method: 'GET',
+			url: apiUrl,
+			success: function(data){
+				$('#result').html('');
+				Object.keys(data).forEach(function(key){
+					if(typeof(data[key]) === 'object'){
+						var newArr = data[key];
+						Object.keys(newArr).forEach(function(ke){
+							if(typeof(newArr[ke]) === 'object'){
+								var anotherArr = newArr[ke];
+								Object.keys(anotherArr).forEach(function(ki){
+									if(ki === "name"){
+										$('#result').append("<div>"+ "<b> Place : <b>" + anotherArr[ki] + "</div>");
+										//console.log("Place : " + anotherArr[ki]);
+									}
+									else if(ki === "lat"){
+										$('#result').append("<div>"+ "<b> Latitude : <b>" + anotherArr[ki] + "</div>");
+									//console.log("latitude : " + anotherArr[ki]);
+									}
+									else if(ki === "lon"){
+										$('#result').append("<div>"+ "<b> Longitude : <b>" + anotherArr[ki] + "</div>"+ "<br>");
+									//console.log("Longitude" + anotherArr[ki]);
+									}
+									else if(ki === "tzs"){
+										$('#result').append("<div>"+ "<b> Time Zone : <b>" + anotherArr[ki] + "</div>");
+									//console.log("Lies in: " + anotherArr[ki]); 
+									}
+								})
+							}
+							//console.log(newArr[ke]);
+
+						});
+					};
+					//console.log(data[key]);
+
+				})
+				console.log(data);
+			},
+			error: function(err) {alert(err);},
+			beforeSend: function(xhr){
+				xhr.setRequestHeader("X-Mashape-Authorization",
+					"GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+			}
+
+			});
+		});
+	});
+
+
+
+
+
+		</script>
+</body>
+</html>

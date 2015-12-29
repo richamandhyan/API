@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<input id="inputs" type="text" placeholder="country code">
+	<input id="inputs2" type="text" placeholder ="Phone number">
+	<button id= "search">Submit!</button>
+			
+<script>
+	$(document).ready(function(){
+
+			$('button').on('click',function(){
+				var countryCode = $('#inputs').val();
+				var numbers = $('#inputs2').val();
+
+		
+			var apiUrl = encodeURI('https://neutrinoapi-phone-validate.p.mashape.com/phone-validate');
+
+			var postDataObj = {};
+			postDataObj.number = numbers;
+			postDataObj.countrycode = countryCode;
+			console.log(postDataObj);
+			console.log(apiUrl);
+
+		$.ajax({
+			method:'POST',
+			url: apiUrl,
+			data:  postDataObj,
+			success: function(data){
+				console.log(data);
+			},
+			
+			error: function(err){alert(err);},
+			beforeSend: function(xhr){
+					xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+				},
+
+			})
+		});
+
+});
+
+
+
+  </script>	
+</body>
+</html>

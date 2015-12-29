@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Api assignment-2</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<h2>Find Stations in a city in India</h2>
+	<b>Station : </b> <input id="search" type="text" placeholder="Enter Station">
+	<button>Find!</button>
+	<div id="result"><br></div>
+	<script>
+		$(document).ready(function () {
+			
+			$('button').on('click', function () {
+				var station = $('#search').val();
+
+				var apiUrl = encodeURI('https://indianrailways.p.mashape.com/findstations.php?station='+station);
+				console.log(apiUrl);
+					
+					$.ajax({
+						method: 'GET',
+						url: apiUrl,
+						success: function(data){
+							Object.keys(data).forEach(function(key){
+								if(typeof(data[key]) === 'object'){
+									var newArr = data[key];
+									Object.keys(newArr).forEach(function(ki){
+										if(typeof(newArr[ki]) === "object"){
+											var arrCopy = newArr[ki];
+											Object.keys(arrCopy).forEach(function(ke){
+												if(ke === "stationName"){
+													$('#result').append("<div>"+ "<b> Station Name : </b>" + arrCopy[ke] +"</div>");
+												} else{
+													$('#result').append("<div>"+ "<b> Station Code: </b>" + arrCopy[ke] +"</div>" + "<br>")
+												}
+											});
+										}
+									});
+								}
+							});
+							console.log(data);
+						},
+						error: function(err) {alert(err);},
+						beforeSend: function(xhr){
+							xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+						}
+					});
+			});
+		});
+
+	</script>
+</body>
+</html>

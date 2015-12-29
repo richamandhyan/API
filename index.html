@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ajax call document</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<input id="city" type="text" placeholder="City name">
+	<input id="country" type="text" placeholder="Country Code">
+	<button>Get data!</button>
+	<div id="result"></div>
+	
+  <script type="text/javascript">
+		$(document).ready(function () {
+			
+			$('button').on('click', function () {
+				var city = $('#city').val();
+				var countryCode = $('#country').val();
+
+				var apiUrl = encodeURI('http://api.openweathermap.org/data/2.5/forecast?q=' + city + ',' + countryCode + '&mode=json');
+
+				console.log(apiUrl);
+			
+				$.ajax({
+					method: 'GET',
+					url: apiUrl,
+					success: function (data){
+  									Object.keys(data).forEach(function(key){
+  										if(typeof(data[key]) == 'object'){
+  											var test = data[key];
+  											Object.keys(test).forEach(function(k){
+  												if(k === "name"){
+  													$('#result').append('<div>' + "<b>City : </b>" + test[k] + '</div>');
+  												}
+  												else if(k === "country"){
+  													$('#result').append('<div>' + "<b>Country : </b>" + test[k] + '</div>');
+  												}
+  												else if(k < 40){
+  													var testNew = test[k];
+  													Object.keys(testNew).forEach(function(ke){
+  														if(ke === "dt_txt"){
+  															$('#result').append('<div>' + "<b> At : </b>" + testNew[ke] + '</div>' + '<br>');
+  														}
+  														else if(typeof(testNew[ke]) == 'object'){
+  															var testAnother = testNew[ke];
+  															Object.keys(testAnother).forEach(function(ki){
+    																if(ki ==="temp_max") {
+    																	$('#result').append('<div>' + "<b>Maximum Temperature : </b>" + testAnother[ki] + '</div>');
+    															} else if(ki ==="temp_min"){
+    																	$('#result').append('<div>' + "<b>Minimum Temperature : </b>" + testAnother[ki] + '</div>');
+    															} else if(ki === "speed"){
+    																  $('#result').append('<div>' + "<b>Wind Speed : </b>" + testAnother[ki] + '</div>');
+    															} else if(typeof(testAnother[ki]) == 'object'){
+    																  var testing = testAnother[ki];
+    																  Object.keys(testing).forEach(function(c){
+    																	   if(c === "description"){
+    																		    $('#result').append('<div>' + "<b>Sky Data : </b>" + testing[c] + '</div>');
+    																	   }
+    																  });
+    															}
+
+  															});
+  														}
+  													});
+  												} 											
+  											})
+  										}
+  									});
+  							 console.log(data);
+                },
+          error:function(err){alert(err);} 
+				});
+			});
+		});
+
+	</script>
+</body>
+</html>

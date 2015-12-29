@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Api-assignment-5</title>
+	<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<h2>Year Analysis</h2>
+	<input id="year" type="text" placeholder="Enter year">
+	<button>Analyse</button>
+	<br><br>
+	<div id="result"><b>Facts:</b></div>
+
+	<script type="text/javascript">
+	$(document).ready(function () {
+		$('button').on('click',function(){
+			var year = $('#year').val();
+			
+			var apiUrl = encodeURI('https://numbersapi.p.mashape.com/'+year+'/year?fragment=true&json=true');
+			console.log(apiUrl);
+
+			$.ajax({
+				method:'GET',
+				url: apiUrl,
+				success: function(data){
+					Object.keys(data).forEach(function(key){
+						if(key !== 'found' && key!== 'type'){
+							$('#result').append('<div>' + data[key] + '</div>');
+						}
+					});
+					console.log(data);	
+				},
+				error: function(err){alert(err);},
+				beforeSend: function(xhr){
+						xhr.setRequestHeader("X-Mashape-Authorization","GW164NjNUimshQ2PDlrl5MonV4obp1IkfVTjsnfDCIOEVGKIAu");
+					}
+				});
+		});
+	});		
+	</script>
+	
+</body>
+</html>
